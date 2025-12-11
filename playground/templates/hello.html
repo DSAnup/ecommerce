@@ -6,10 +6,36 @@
 <body>
     <h1> {{ message }} </h1>
     <ul>
-        {% for product in products %}
-            <li>{{ product.title }} - ${{ product.unit_price }}</li>
+        {% for order in orders %}
+            <li>
+                Order #{{ order.id }} - Placed at: {{ order.placed_at }} - Customer: {{ order.customer.first_name }}
+                <ul>
+                    {% for item in order.orderitem_set.all %}
+                        <li>
+                            Product: {{ item.product.title }} - Quantity: {{ item.quantity }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
         {% endfor %}
     </ul>
+    <!-- <ul>
+        {% for item in order_items %}
+            <li>
+                Order Item #{{ item.id }} - Product: {{ item.product.title }} - Quantity: {{ item.quantity }}
+            </li>
+        {% endfor %}
+    </ul> -->
+    <!-- <ul>
+        {% for product in products %}
+            <li>
+                {{ product.title }} - {{ product.collection.title }} 
+                {% for promo in product.promotions.all %}
+                    ({{ promo.description }})
+                {% endfor %}
+            </li>
+        {% endfor %}
+    </ul> -->
 </body>
 
 </html>
