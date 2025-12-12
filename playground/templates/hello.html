@@ -19,6 +19,16 @@
             </li>
         {% endfor %}
     </ul>
+    {{ orderhave.total_items }}
+    {{ product1.total_products }}
+    {{ customer1.total_orders }}
+    <h2>Products in Collection 3</h2>
+    <ul>
+        {% for product in collection3 %}
+            <li>
+                {{ product.title }} - Min Price: {{ product.min_price }} - Max Price: {{ product.max_price }} - Avg Price: {{ product.avg_price }}
+            </li>
+        {% endfor %}
     <!-- <ul>
         {% for item in order_items %}
             <li>
