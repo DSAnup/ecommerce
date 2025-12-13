@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from django.db.models import Count, Func, F, Sum, Value, CharField, ExpressionWrapper, DecimalField, Min, Max, Avg
 from django.db.models.functions import Concat
 from store.models import Product, Customer, Collection, Order, OrderItem 
+from django.contrib.contenttypes.models import ContentType
+from store.models import Product
+from tags.models import TaggedItem
 
 # Create your views here.
 def home(request):
@@ -24,6 +27,8 @@ def home(request):
     collection3 = Product.objects.filter(collection__id=3).annotate(
         min_price=Min('unit_price'), max_price=Max('unit_price'), avg_price=Avg('unit_price')
     )
+    content_type = ContentType.objects.get_for_model(Product)
+    # tagged_items = TaggedItem.objects.filter(content_type=content_type, object_id=1)
 
     context = {
         'products': products,
