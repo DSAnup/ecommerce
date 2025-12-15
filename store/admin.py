@@ -1,10 +1,8 @@
-from django.contrib import admin, messages
-from django.contrib.contenttypes.admin import GenericTabularInline
+from django.contrib import admin, messages 
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
 from .models import *
-from tags.models import TaggedItem
 
 class InventoryFilter(admin.SimpleListFilter):
     title = 'inventory'
@@ -22,10 +20,6 @@ class InventoryFilter(admin.SimpleListFilter):
         if self.value() == 'sufficient':
             return queryset.filter(inventory__gte=10)
 
-class TagInline(GenericTabularInline):
-    model = TaggedItem
-    autocomplete_fields = ['tag']
-    extra = 0
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     autocomplete_fields = ['collection']
@@ -37,7 +31,6 @@ class ProductAdmin(admin.ModelAdmin):
     list_per_page = 10
     list_select_related = ['collection']
     search_fields = ['title']
-    inlines = [TagInline]
 
     def collection_title(self, product):
         return product.collection.title
