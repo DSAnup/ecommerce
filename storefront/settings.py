@@ -139,3 +139,7 @@ STATIC_URL = 'static/'
 #         {'app': 'store'}
 #     ]
 # }
+
+REST_FRAMEWORK = {
+    'COERCE_DECIMAL_TO_STRING': False
+}
