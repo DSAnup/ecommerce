@@ -6,11 +6,18 @@ from rest_framework import status
 from .models import Product, Collection
 from .serializers import ProductSerializer, CollectionSerializer
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def product_list(request):
-    products = Product.objects.select_related('collection').all()
-    serializer = ProductSerializer(products, many=True, context={'request': request})
-    return Response(serializer.data)
+    if request.method == 'POST':
+        serializer = ProductSerializer(data=request.data)
+        # serializer.is_valid(raise_exception=True)
+        # serializer.save()
+        # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response('ok')
+    elif request.method == 'GET':
+        products = Product.objects.select_related('collection').all()
+        serializer = ProductSerializer(products, many=True, context={'request': request})
+        return Response(serializer.data)
 
 @api_view(['GET'])
 def product_detail(request, product_id):
