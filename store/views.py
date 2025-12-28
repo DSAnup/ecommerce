@@ -10,11 +10,10 @@ from .serializers import ProductSerializer, CollectionSerializer
 def product_list(request):
     if request.method == 'POST':
         serializer = ProductSerializer(data=request.data)
-        # serializer.is_valid(raise_exception=True)
-        # serializer.save()
-        # return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response('ok')
-    elif request.method == 'GET':
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'GET': 
         products = Product.objects.select_related('collection').all()
         serializer = ProductSerializer(products, many=True, context={'request': request})
         return Response(serializer.data)
