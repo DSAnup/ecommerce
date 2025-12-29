@@ -3,34 +3,41 @@ from django.http import HttpResponse
 from django.db.models import Count
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import status
 from .models import Product, Collection
 from .serializers import ProductSerializer, CollectionSerializer
 
-@api_view(['GET', 'POST'])
-def product_list(request):
-    if request.method == 'POST':
-        serializer = ProductSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    elif request.method == 'GET': 
+class ProductList(APIView):
+    def get(self, request):
         products = Product.objects.select_related('collection').all()
         serializer = ProductSerializer(products, many=True, context={'request': request})
         return Response(serializer.data)
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def product_detail(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
-    if request.method == 'GET':
-        serializer = ProductSerializer(product)
+    def post(self, request):
+        serializer = ProductSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class ProductDetail(APIView):
+    def get_object(self, pk):
+        return get_object_or_404(Product, pk=pk)
+
+    def get(self, request, pk):
+        product = self.get_object(pk)
+        serializer = ProductSerializer(product, context={'request': request})
         return Response(serializer.data)
-    elif request.method == 'PUT':
+
+    def put(self, request, pk):
+        product = self.get_object(pk)
         serializer = ProductSerializer(product, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-    elif request.method == 'DELETE':
+
+    def delete(self, request, pk):
+        product = self.get_object(pk)
         if product.orderitems.count() > 0:
             return Response({'error': 'Product cannot be deleted because it is associated with an order item.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         product.delete()
